@@ -1,0 +1,140 @@
+CREATE TABLE appr_line
+(
+	doc_no               VARCHAR2(20) NOT NULL ,
+	appr_no              NUMBER NOT NULL ,
+	appr_order           number NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL ,
+	dept_cd              VARCHAR2(20) NOT NULL ,
+	position_cd          VARCHAR2(1) NOT NULL ,
+	appr_status    	VARCHAR2(10) NOT NULL ,
+	appr_dtm             DATE NOT NULL ,
+	appr_refuse_op       CLOB NULL 
+);
+
+
+
+ALTER TABLE appr_line
+	ADD  PRIMARY KEY (doc_no,appr_no);
+
+
+CREATE TABLE attach
+(
+	attach_id            VARCHAR2(20) NOT NULL ,
+	attach_type          VARCHAR2(20) NOT NULL ,
+	con_key1             VARCHAR2(50) NULL ,
+	con_key2             VARCHAR2(50) NULL ,
+	con_key3             VARCHAR2(50) NULL ,
+	org_file_name        VARCHAR2(255) NOT NULL ,
+	server_file_name     VARCHAR2(255) NOT NULL ,
+	file_size            NUMBER NOT NULL ,
+	insert_dtm           TIMESTAMP NOT NULL 
+);
+
+CREATE TABLE department
+(
+	dept_cd              VARCHAR2(20) NOT NULL ,
+	dept_nm              VARCHAR2(50) NOT NULL ,
+	p_dept_cd            VARCHAR2(20) NULL 
+);
+
+
+
+ALTER TABLE department
+	ADD  PRIMARY KEY (dept_cd);
+
+CREATE TABLE document
+(
+	doc_no               VARCHAR2(20) NOT NULL ,
+	doc_title            VARCHAR2(255) NOT NULL ,
+	doc_content          CLOB NOT NULL ,
+	emp_no               VARCHAR2(20) NULL ,
+	dept_cd              VARCHAR2(20) NULL ,
+	appr_status          VARCHAR2(20) NOT NULL ,
+	last_appr_dtm        DATE NOT NULL ,
+	insert_dtm           DATE NOT NULL ,
+	update_dtm           DATE NOT NULL 
+);
+
+CREATE SEQUENCE doc_no_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+ALTER TABLE document
+	ADD  PRIMARY KEY (doc_no);
+
+CREATE TABLE employee
+(
+	emp_no               VARCHAR2(20) NOT NULL ,
+	emp_nm               VARCHAR2(20) NOT NULL ,
+	emp_status           VARCHAR2(20) NULL ,
+	dept_cd              VARCHAR2(20) NULL ,
+	position_cd          VARCHAR2(1) NULL ,
+	hire_date            DATE NOT NULL ,
+	retire_date          DATE NULL ,
+	gender               VARCHAR2(10) NULL ,
+	birth                DATE NULL ,
+	email                VARCHAR2(100) NOT NULL ,
+	pw                   VARCHAR2(256) NOT NULL 
+);
+
+
+
+ALTER TABLE employee
+	ADD  PRIMARY KEY (emp_no);
+
+
+
+CREATE TABLE employee_auth
+(
+	auth_cd              VARCHAR2(10) NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL 
+);
+
+
+
+ALTER TABLE employee_auth
+	ADD  PRIMARY KEY (auth_cd,emp_no);
+
+ALTER TABLE appr_line
+	ADD (FOREIGN KEY (doc_no) REFERENCES document (doc_no));
+
+
+
+ALTER TABLE appr_line
+	ADD (FOREIGN KEY (emp_no) REFERENCES employee (emp_no) ON DELETE SET NULL);
+
+
+
+ALTER TABLE appr_line
+	ADD (FOREIGN KEY (dept_cd) REFERENCES department (dept_cd) ON DELETE SET NULL);
+
+ALTER TABLE department
+	ADD (FOREIGN KEY (p_dept_cd) REFERENCES department (dept_cd) ON DELETE SET NULL);
+
+
+
+ALTER TABLE document
+	ADD (FOREIGN KEY (emp_no) REFERENCES employee (emp_no) ON DELETE SET NULL);
+
+
+
+ALTER TABLE document
+	ADD (FOREIGN KEY (dept_cd) REFERENCES department (dept_cd) ON DELETE SET NULL);
+
+
+
+ALTER TABLE employee
+	ADD (FOREIGN KEY (dept_cd) REFERENCES department (dept_cd) ON DELETE SET NULL);
+
+
+
+ALTER TABLE employee_auth
+	ADD (FOREIGN KEY (emp_no) REFERENCES employee (emp_no));
+
+
+
+ALTER TABLE employee_auth
+	ADD (FOREIGN KEY (auth_cd) REFERENCES auth_info (auth_cd));
+
