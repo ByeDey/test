@@ -1,0 +1,56 @@
+<insert id="insertApprovalRequest" parameterType="map">
+    insert into approvals (document_id, employee_id, approval_status, approval_level)
+    values (
+        #{documentId}, 
+        #{employeeId}, 
+        '대기중',  -- 첫 번째 결제
+        1   -- #{approvalLevel} 
+    );
+</insert>
+
+<update id="updateApprovalStatus" parameterType="map">
+    update approvals
+    set 
+        approval_status = case
+            when (approval_level + 1) = 2 then '승인대기중'
+            when (approval_level + 1) = 3 then '최종승인대기중'
+            else '대기중'  -- 기본 상태 
+        end,
+        approval_level = approval_level + 1 -- 현재 approval_level에 1을 더해 2단계로, 3단계로 변경 --
+    where document_id = #{documentId} 
+      and employee_id = #{employeeId} 
+      and approval_level = #{currentApprovalLevel};
+</update>
+
+
+
+///본인 결제 리스트 조회
+<select id="selectApprovalStatus" resultType="Approval">
+    SELECT document_id, employee_id, approval_status, approval_level
+    FROM approvals
+    WHERE employee_id = #{employeeId}
+    ORDER BY document_id;
+</select>
+
+///뭐가 있더라??
+
+
+ CREATE TABLE approvals (
+        documentId VARCHAR2(50) PRIMARY KEY,
+        employeeId VARCHAR2(50),
+       approvalStatus VARCHAR2(50),
+      approvalLevel VARCHAR2(50)
+   );
+
+ update approvals
+    set
+        approvalstatus = case
+            when (approvallevel + 1) = 2 then '승인대기중'
+            when (approvallevel + 1) = 3 then '최종승인대기중'
+            else '대기중'  -- 기본 상태
+        end,
+        approvallevel = approvallevel + 1  -- approvallevel을 1 증가시켜 2단계 또는 3단계로 변경
+    where documentId = 101  -- 실제 documentid 입력
+     and employeeId = 1   -- 실제 employeeid 입력
+     and approvallevel = 2  -- 현재 approvallevel이 1인 경우에만 업데이트
+   ;
