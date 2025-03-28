@@ -1,0 +1,24 @@
+1단계 요청
+<insert id="insertApprovalRequest">
+    INSERT INTO approvals (document_id, employee_id, approval_status, approval_level)
+    VALUES (
+        #{documentId}, 
+        #{employeeId}, 
+        '대기중',     
+        1            
+    );
+</insert>
+
+2, 3단계 요청 처리
+<update id="updateApprovalStatus">
+    UPDATE approvals
+    SET 
+        approval_status = CASE
+            WHEN #{approvalLevel} = 2 AND approval_status = '대기중' THEN '승인대기중'   -- 2단계: '대기중' -> '승인대기중'
+            WHEN #{approvalLevel} = 3 AND approval_status = '승인대기중' THEN '최종승인대기중'   -- 3단계: '승인대기중' -> '최종승인대기중'
+            ELSE approval_status
+        END,
+        approval_level = #{approvalLevel}
+    WHERE document_id = #{documentId} AND employee_id = #{employeeId}
+      AND (approval_status = '대기중' OR approval_status = '승인대기중');  -- 2단계와 3단계를 모두 처리할 수 있도록 조건 변경
+</update>
