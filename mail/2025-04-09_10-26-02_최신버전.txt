@@ -1,0 +1,374 @@
+DROP TABLE alarm CASCADE CONSTRAINTS;
+DROP TABLE appr_line CASCADE CONSTRAINTS;
+DROP TABLE attach CASCADE CONSTRAINTS;
+DROP TABLE auth_info CASCADE CONSTRAINTS;
+DROP TABLE cmm_code CASCADE CONSTRAINTS;
+DROP TABLE commute CASCADE CONSTRAINTS;
+DROP TABLE department CASCADE CONSTRAINTS;
+DROP TABLE document CASCADE CONSTRAINTS;
+DROP TABLE employee CASCADE CONSTRAINTS;
+DROP TABLE employee_auth CASCADE CONSTRAINTS;
+DROP TABLE message CASCADE CONSTRAINTS;
+DROP TABLE notice CASCADE CONSTRAINTS;
+DROP TABLE reply CASCADE CONSTRAINTS;
+DROP TABLE vacation CASCADE CONSTRAINTS;
+DROP TABLE login CASCADE CONSTRAINTS;
+
+CREATE TABLE alarm
+(
+	alarm_no             VARCHAR2(20) NOT NULL ,
+	alarm_type           VARCHAR2(1) NULL ,
+	alarm_content        CLOB NULL ,
+	alarm_yn             VARCHAR2(1) NULL ,
+	alarm_dtm            TIMESTAMP NULL ,
+	send_emp_no          VARCHAR2(20) NULL ,
+	receive_emp_no       VARCHAR2(20) NULL 
+);
+
+
+
+ALTER TABLE alarm
+	ADD  PRIMARY KEY (alarm_no);
+
+
+
+CREATE TABLE appr_line
+(
+	doc_no               VARCHAR2(20) NOT NULL ,
+	appr_no              NUMBER NOT NULL ,
+	appr_order           number NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL ,
+	dept_cd              VARCHAR2(20) NOT NULL ,
+	position_cd          VARCHAR2(1) NOT NULL ,
+	appr_status     VARCHAR2(50) NOT NULL ,
+	appr_dtm             DATE NOT NULL ,
+	appr_refuse_op       CLOB NULL 
+);
+
+
+
+ALTER TABLE appr_line
+	ADD  PRIMARY KEY (doc_no,appr_no);
+
+drop sequence doc_no_seq;
+CREATE SEQUENCE doc_no_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+drop sequence appr_no_seq;
+CREATE SEQUENCE appr_no_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+drop sequence attach_id_seq;
+CREATE SEQUENCE attach_id_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+CREATE TABLE attach
+(
+	attach_id            VARCHAR2(20) NOT NULL ,
+	con_key1             VARCHAR2(50) NULL ,
+	con_key2             VARCHAR2(50) NULL ,
+	con_key3             VARCHAR2(50) NULL ,
+	org_file_name        VARCHAR2(255) NOT NULL ,
+	server_file_name     VARCHAR2(255) NOT NULL ,
+	file_size            NUMBER NOT NULL ,
+	insert_dtm           TIMESTAMP NOT NULL 
+);
+
+
+
+ALTER TABLE attach
+	ADD  PRIMARY KEY (attach_id);
+
+
+
+CREATE TABLE auth_info
+(
+	auth_cd              VARCHAR2(10) NOT NULL ,
+	auth_nm              VARCHAR2(100) NOT NULL 
+);
+
+
+
+ALTER TABLE auth_info
+	ADD  PRIMARY KEY (auth_cd);
+
+
+
+CREATE TABLE cmm_code
+(
+	cmm_class            varchar2(30) NOT NULL ,
+	cmm_cd               VARCHAR2(20) NOT NULL ,
+	cmm_nm               VARCHAR2(100) NULL 
+);
+
+
+
+ALTER TABLE cmm_code
+	ADD  PRIMARY KEY (cmm_class,cmm_cd);
+
+
+
+CREATE TABLE commute(
+id NUMBER PRIMARY KEY,
+emp_no VARCHAR2(20) NOT NULL,
+work_date DATE,	
+clock_in TIMESTAMP,
+clock_out  TIMESTAMP,
+total_hours NUMBER(5,2),
+overtime_hours NUMBER(5,2),	
+empNm VARCHAR2(12 ),
+deptNm VARCHAR2(12), 
+cmmNm VARCHAR2(12)
+);
+
+
+
+CREATE TABLE login (
+    uuid         VARCHAR2(100) PRIMARY KEY,
+    emp_no       VARCHAR2(20),
+    code         VARCHAR2(10), 
+    token        VARCHAR2(500), 
+    created_at   DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE department
+(
+	dept_cd              VARCHAR2(20) NOT NULL ,
+	dept_nm              VARCHAR2(50) NOT NULL ,
+	p_dept_cd            VARCHAR2(20) NULL 
+);
+
+
+
+ALTER TABLE department
+	ADD  PRIMARY KEY (dept_cd);
+
+
+
+CREATE TABLE document(
+	doc_no               VARCHAR2(20) NOT NULL ,
+	doc_title            VARCHAR2(255) NOT NULL ,
+	doc_content          CLOB NOT NULL ,
+	emp_no               VARCHAR2(20) NULL ,
+	dept_cd              VARCHAR2(20) NULL ,
+	position_cd 	VARCHAR2(20) NULL,
+	appr_status          VARCHAR2(50) NOT NULL ,
+	last_appr_dtm        DATE NOT NULL ,
+	insert_dtm           DATE NOT NULL ,
+	update_dtm           DATE NOT NULL 	
+);
+
+
+
+ALTER TABLE document
+	ADD  PRIMARY KEY (doc_no);
+
+
+
+CREATE TABLE employee
+(
+	emp_no               VARCHAR2(20) NOT NULL ,
+	emp_nm               VARCHAR2(20) NOT NULL ,
+	emp_status           VARCHAR2(1) DEFAULT '1' NULL ,
+	dept_cd              VARCHAR2(20) NULL ,
+	position_cd          VARCHAR2(1) NULL ,
+	hire_date            DATE NOT NULL ,
+	retire_date          DATE NULL ,
+	gender               VARCHAR2(1) NULL ,
+	birth                DATE NULL ,
+	email                VARCHAR2(100) NOT NULL ,
+	pw                   VARCHAR2(256) NOT NULL,
+	annual_leave         VARCHAR2(20) DEFAULT '15' NOT NULL
+);
+
+
+
+ALTER TABLE employee
+	ADD  PRIMARY KEY (emp_no);
+
+
+
+CREATE TABLE employee_auth
+(
+	auth_cd              VARCHAR2(10) NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL 
+);
+
+
+
+ALTER TABLE employee_auth
+	ADD  PRIMARY KEY (auth_cd,emp_no);
+
+
+CREATE TABLE message
+(
+	msg_no               VARCHAR2(20) NOT NULL ,
+	msg_title            VARCHAR2(255) NULL ,
+	msg_content          CLOB NULL ,
+	send_dtm             TIMESTAMP NULL ,
+	send_emp_no          VARCHAR2(20) NULL ,
+	receive_emp_no       VARCHAR2(20) NULL ,
+	send_yn              VARCHAR2(20) NULL ,
+	read_yn              VARCHAR2(20) NULL ,
+	del_yn               VARCHAR2(20) NULL
+);
+
+drop sequence message_seq;
+CREATE SEQUENCE message_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+ALTER TABLE message
+	ADD  PRIMARY KEY (msg_no);
+
+
+
+drop sequence notice_seq;
+create sequence notice_seq 
+minvalue 1
+start with 1
+nocache;
+
+CREATE TABLE notice
+(
+	notice_no            NUMBER NOT NULL ,
+	notice_title         VARCHAR2(255) NOT NULL ,
+	notice_content       CLOB NULL ,
+	dept_nm              VARCHAR2(20) NULL ,
+	notice_dtm           DATE NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL ,
+	emp_nm         VARCHAR2(20) NOT NULL ,
+	temporary_save       NUMBER NULL ,
+	notice_level         NUMBER NULL ,
+	notice_views         NUMBER NULL
+);
+
+ALTER TABLE notice
+	ADD  PRIMARY KEY (notice_no);
+
+drop sequence reply_seq;
+create sequence reply_seq
+minvalue 1
+start with 1
+nocache;
+
+DROP TABLE reply;
+CREATE TABLE reply
+(
+	reply_no             NUMBER NOT NULL ,
+	reply_content        CLOB NOT NULL ,
+	notice_no            NUMBER NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL ,
+	emp_nm         VARCHAR2(20) NOT NULL ,
+	reply_dtm            DATE NOT NULL
+);
+
+
+
+ALTER TABLE reply
+	ADD  PRIMARY KEY (reply_no);
+
+
+CREATE TABLE vacation
+(
+	vacation_no          VARCHAR2(20) NULL ,
+	vacation_type         VARCHAR2(20) NULL ,
+	req_emp_no           VARCHAR2(20) NULL ,
+	vacation_reason      CLOB NULL ,
+	start_dt             DATE NULL ,
+	end_dt               DATE NULL ,
+	total_days           NUMBER NULL ,
+	vacation_status      VARCHAR2(1) NULL ,
+	appr_emp_no          VARCHAR2(20) NULL 
+);
+
+
+
+ALTER TABLE vacation
+	ADD  PRIMARY KEY (vacation_no);
+
+
+
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '긴급 회의', '오전 10시에 회의실에서 모이세요.', TIMESTAMP '2024-03-24 09:30:00', '25001', '25002', 'Y', 'N');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '업무 요청', '새로운 업무가 배정되었습니다.', TIMESTAMP '2024-03-24 11:00:00', '25002', '25003', 'Y', 'Y');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '회의록 공유', '주간 회의록을 공유드립니다.', TIMESTAMP '2024-03-24 13:00:00', '25003', '25004', 'Y', 'N');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '휴가 승인', '휴가 신청이 승인되었습니다.', TIMESTAMP '2024-03-24 15:00:00', '25004', '25002', 'Y', 'Y');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '회사 공지', '사내 시스템 점검 안내드립니다.', TIMESTAMP '2024-03-24 17:00:00', '25003', '25001', 'Y', 'N');
+
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1000','대표',null);
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1100','인사팀','1000');
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1200','경영팀','1000');
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1300','관리팀','1000');
+
+SELECT * FROM DEPARTMENT;
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,RETIRE_DATE,gender,birth,email,pw)
+		values('25001','나사장','1100','1','2000-01-01',null,'1','1970-02-01','email@naver.com','1');
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,retire_date,gender,birth,email,pw)
+		values('25002','나부장','1100','2','2001-01-01',null,'2','1980-02-01','email2@naver.com','1');
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,retire_date,gender,birth,email,pw)
+		values('25003','나과장','1100','3','2002-01-01',NULL,'1','1985-02-01','email3@naver.com','1');
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,retire_date,gender,birth,email,pw)
+		values('25004','나사원','1000','4','2004-01-01',null,'2','1980-02-01','email4@naver.com','1');
+
+
+
+SELECT *FROM  EMPLOYEE;
+
+INSERT INTO AUTH_INFO(AUTH_CD,AUTH_NM) VALUES('10','공지사항등록권한');
+INSERT INTO AUTH_INFO(AUTH_CD,AUTH_NM) VALUES('20','인사관리담당자');
+INSERT INTO AUTH_INFO(AUTH_CD,AUTH_NM) VALUES('30','관리자권한');
+
+SELECT * FROM AUTH_INFO;
+
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('10','25001');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('20','25001');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('30','25001');
+
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('10','25002');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('20','25002');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('30','25002');
+
+SELECT * FROM EMPLOYEE_AUTH;
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','1','사장');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','2','부장');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','3','과장');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','4','사원');
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('EMP_STATUS','1','재직');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('EMP_STATUS','2','휴직');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('EMP_STATUS','9','퇴직');
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('GENDER','1','남자');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('GENDER','2','여자');
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('ATTACH_TYPE','1','공지사항첨부파일');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('ATTACH_TYPE','2','전자결재첨부파일');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('ATTACH_TYPE','3','메신저첨부파일');
+
+commit;
+
