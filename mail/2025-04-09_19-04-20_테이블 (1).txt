@@ -1,0 +1,37 @@
+drop sequence notice_seq;
+create sequence notice_seq 
+minvalue 1
+start with 1
+nocache;
+
+DROP TABLE notice;
+CREATE TABLE notice
+(
+	notice_no            NUMBER NOT NULL ,
+	notice_title         VARCHAR2(255) NOT NULL ,
+	notice_content       CLOB NULL ,
+	dept_nm              VARCHAR2(20) NULL ,
+	notice_dtm           DATE NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL ,
+	emp_nm         VARCHAR2(20) NOT NULL ,
+	temporary_save       NUMBER NULL ,
+	notice_level         NUMBER NULL ,
+	notice_views         NUMBER NULL
+);
+
+ALTER TABLE notice
+	ADD  PRIMARY KEY (notice_no);
+
+CREATE TABLE reply
+(
+	reply_no             NUMBER NOT NULL ,
+	reply_content        CLOB NOT NULL ,
+	notice_no            NUMBER NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL ,
+	reply_dtm            DATE NOT NULL
+);
+
+
+
+ALTER TABLE reply
+	ADD  PRIMARY KEY (reply_no);
