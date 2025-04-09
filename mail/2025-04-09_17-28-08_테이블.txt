@@ -1,0 +1,92 @@
+
+
+
+CREATE TABLE appr_line
+(
+	doc_no               VARCHAR2(20) NOT NULL ,
+	appr_no              NUMBER NOT NULL ,
+	appr_order           number NOT NULL ,
+	emp_no               VARCHAR2(20) NOT NULL ,
+	dept_cd              VARCHAR2(20) NOT NULL ,
+	position_cd          VARCHAR2(1) NOT NULL ,
+	appr_proc_status     VARCHAR2(1) NOT NULL ,
+	appr_dtm             DATE NOT NULL ,
+	appr_refuse_op       CLOB NULL 
+);
+
+
+
+ALTER TABLE appr_line
+	ADD  PRIMARY KEY (doc_no,appr_no);
+
+
+
+CREATE TABLE attach
+(
+	attach_id            VARCHAR2(20) NOT NULL ,
+	attach_type          VARCHAR2(1) NOT NULL ,
+	con_key1             VARCHAR2(50) NULL ,
+	con_key2             VARCHAR2(50) NULL ,
+	con_key3             VARCHAR2(50) NULL ,
+	org_file_name        VARCHAR2(255) NOT NULL ,
+	server_file_name     VARCHAR2(255) NOT NULL ,
+	file_size            NUMBER NOT NULL ,
+	insert_dtm           TIMESTAMP NOT NULL 
+);
+
+
+
+ALTER TABLE attach
+	ADD  PRIMARY KEY (attach_id);
+
+
+
+
+
+CREATE TABLE document
+(
+	doc_no               VARCHAR2(20) NOT NULL ,
+	doc_title            VARCHAR2(255) NOT NULL ,
+	doc_content          CLOB NOT NULL ,
+	emp_no               VARCHAR2(20) NULL ,
+	dept_cd              VARCHAR2(20) NULL ,
+	appr_status          VARCHAR2(1) NOT NULL ,
+	last_appr_dtm        DATE NOT NULL ,
+	insert_dtm           DATE NOT NULL ,
+	update_dtm           DATE NOT NULL 
+);
+
+
+
+ALTER TABLE document
+	ADD  PRIMARY KEY (doc_no);
+
+
+
+
+
+
+
+ALTER TABLE appr_line
+	ADD (FOREIGN KEY (doc_no) REFERENCES document (doc_no));
+
+
+
+ALTER TABLE appr_line
+	ADD (FOREIGN KEY (emp_no) REFERENCES employee (emp_no) ON DELETE SET NULL);
+
+
+
+ALTER TABLE appr_line
+	ADD (FOREIGN KEY (dept_cd) REFERENCES department (dept_cd) ON DELETE SET NULL);
+
+ALTER TABLE document
+	ADD (FOREIGN KEY (emp_no) REFERENCES employee (emp_no) ON DELETE SET NULL);
+
+
+
+ALTER TABLE document
+	ADD (FOREIGN KEY (dept_cd) REFERENCES department (dept_cd) ON DELETE SET NULL);
+
+
+
