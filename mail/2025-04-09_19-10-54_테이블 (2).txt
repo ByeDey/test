@@ -1,0 +1,122 @@
+CREATE TABLE message
+(
+	msg_no               VARCHAR2(20) NOT NULL ,
+	msg_title            VARCHAR2(255) NULL ,
+	msg_content          CLOB NULL ,
+	send_dtm             TIMESTAMP NULL ,
+	send_emp_no          VARCHAR2(20) NULL ,
+	receive_emp_no       VARCHAR2(20) NULL ,
+	send_yn              VARCHAR2(20) NULL ,
+	read_yn              VARCHAR2(20) NULL ,
+	del_yn               VARCHAR2(20) NULL
+);
+
+
+CREATE SEQUENCE message_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+ALTER TABLE message
+	ADD  PRIMARY KEY (msg_no);
+
+ALTER TABLE message
+	ADD (FOREIGN KEY (send_emp_no) REFERENCES employee (emp_no) ON DELETE SET NULL);
+
+ALTER TABLE message
+	ADD (FOREIGN KEY (receive_emp_no) REFERENCES employee (emp_no) ON DELETE SET NULL);
+
+
+
+
+
+
+-- message 테이블 데이터 삽입
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '긴급 회의', '오전 10시에 회의실에서 모이세요.', TIMESTAMP '2024-03-24 09:30:00', '25001', '25002', 'Y', 'N');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '업무 요청', '새로운 업무가 배정되었습니다.', TIMESTAMP '2024-03-24 11:00:00', '25002', '25003', 'Y', 'Y');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '회의록 공유', '주간 회의록을 공유드립니다.', TIMESTAMP '2024-03-24 13:00:00', '25003', '25004', 'Y', 'N');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '휴가 승인', '휴가 신청이 승인되었습니다.', TIMESTAMP '2024-03-24 15:00:00', '25004', '25002', 'Y', 'Y');
+
+INSERT INTO message (msg_no, msg_title, msg_content, send_dtm, send_emp_no, receive_emp_no, send_yn, read_yn) VALUES
+(message_seq.nextval, '회사 공지', '사내 시스템 점검 안내드립니다.', TIMESTAMP '2024-03-24 17:00:00', '25003', '25001', 'Y', 'N');
+
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1000','대표',null);
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1100','인사팀','1000');
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1200','경영팀','1000');
+INSERT INTO DEPARTMENT(DEPT_CD,DEPT_NM,P_DEPT_CD) VALUES('1300','관리팀','1000');
+
+SELECT * FROM DEPARTMENT;
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,RETIRE_DATE,gender,birth,email,pw)
+		values('25001','나사장','1100','1','2000-01-01',null,'1','1970-02-01','email@naver.com','1');
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,retire_date,gender,birth,email,pw)
+		values('25002','나부장','1100','2','2001-01-01',null,'2','1980-02-01','email2@naver.com','1');
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,retire_date,gender,birth,email,pw)
+		values('25003','나과장','1100','3','2002-01-01',NULL,'1','1985-02-01','email3@naver.com','1');
+
+insert into employee(emp_no,emp_nm,dept_cd,position_cd,hire_date,retire_date,gender,birth,email,pw)
+		values('25004','나사원','1000','4','2004-01-01',null,'2','1980-02-01','email4@naver.com','1');
+
+
+
+SELECT *FROM  EMPLOYEE;
+
+INSERT INTO AUTH_INFO(AUTH_CD,AUTH_NM) VALUES('10','공지사항등록권한');
+INSERT INTO AUTH_INFO(AUTH_CD,AUTH_NM) VALUES('20','인사관리담당자');
+INSERT INTO AUTH_INFO(AUTH_CD,AUTH_NM) VALUES('30','관리자권한');
+
+SELECT * FROM AUTH_INFO;
+
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('10','25001');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('20','25001');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('30','25001');
+
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('10','25002');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('20','25002');
+INSERT INTO EMPLOYEE_AUTH(auth_cd,EMP_NO) values('30','25002');
+
+SELECT * FROM EMPLOYEE_AUTH;
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','1','사장');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','2','부장');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','3','과장');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('POSITION_CD','4','사원');
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('EMP_STATUS','1','재직');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('EMP_STATUS','2','휴직');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('EMP_STATUS','9','퇴직');
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('GENDER','1','남자');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('GENDER','2','여자');
+
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('ATTACH_TYPE','1','공지사항첨부파일');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('ATTACH_TYPE','2','전자결재첨부파일');
+INSERT INTO CMM_CODE(CMM_CLASS,CMM_CD,CMM_NM) VALUES('ATTACH_TYPE','3','메신저첨부파일');
+
+
+
+SELECT * FROM CMM_CODE;
+
+
+
+id="submitBtn" data-modal="mail_insert"
+
+
+ALTER TABLE appr_line MODIFY POSITION_CD VARCHAR2(10);
+ALTER TABLE document MODIFY POSITION_CD VARCHAR2(10);
+
+ALTER TABLE document ADD POSITION_CD VARCHAR2(10);
+ALTER TABLE document MODIFY appr_status VARCHAR2(50);
+ALTER TABLE appr_line ADD appr_status VARCHAR2(50);
+
+ALTER TABLE appr_line DROP COLUMN appr_proc_status;
