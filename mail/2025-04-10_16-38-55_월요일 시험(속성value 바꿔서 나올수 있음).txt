@@ -1,0 +1,34 @@
+package myPkg;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class Ex04 {
+	public static void main(String[] args) throws IOException, ParseException {
+		
+		
+		JSONParser parser = new JSONParser();
+		Reader reader = new FileReader("C:\\공공데이터포탈\\서울시 공공도서관 현황정보1.json");
+		JSONObject obj =(JSONObject) parser.parse(reader);
+		
+		JSONArray jsonArr = (JSONArray)obj.get("DATA");
+		for(int i=0;i<jsonArr.size();i++) {
+			JSONObject jsonObject =(JSONObject)jsonArr.get(i);
+			String lbrry_name = (String)jsonObject.get("lbrry_name");
+			String code_value = (String)jsonObject.get("code_value");
+			
+			if(code_value.equals("동작구")) {
+				System.out.println("도서관명:"+lbrry_name);
+				System.out.println("codeValeu:"+code_value);
+			}
+		}
+	}
+}
+제이스파일 가져와서 원하는 정보 출력하느것
