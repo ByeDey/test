@@ -1,0 +1,5 @@
+http://localhost:8080/13_MyBatis_Album2/list.ab
+
+배포 과정
+원하는 프로젝트 - Export - Web.war - Tomcat/webapps/파일이름 저장 
+- cmd - cd C:\Tomcat 9.0\bin - startup
